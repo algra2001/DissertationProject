@@ -1,0 +1,52 @@
+## Initial data inspection
+# FastQC v0.12.1 
+fastqc raw_data/* -o qc_reports
+# MultiQC version 1.33
+multiqc qc_reports/* --outdir ./multiqc
+
+## Metadata subsetting 
+./subset_metadata.sh 05_Nov_2025/ metadata_updated.csv
+./subset_metadata.sh 10_Jun_2025/ metadata_updated.csv
+./subset_metadata.sh 14_Oct_2025/ metadata_updated.csv
+./subset_metadata.sh 15_Apr_2026/ metadata_updated.csv
+./subset_metadata.sh 22_Apr_2026/ metadata_updated.csv
+./subset_metadata.sh 24_Nov_2025/ metadata_updated.csv
+./subset_metadata.sh 28_Jan_2026/ metadata_updated.csv
+./subset_metadata.sh 05_Mar_2026/ metadata_updated.csv
+./subset_metadata.sh 08_Jan_2026/ metadata_updated.csv
+./subset_metadata.sh 30_Sep_2025_1 metadata_updated.csv
+./subset_metadata.sh 30_Sep_2025_2 metadata_updated.csv
+./subset_metadata.sh 30_Sep_2025_3 metadata_updated.csv
+# Sanity checks
+./subset_metadata.sh 21_May_2026/ metadata_updated.csv
+./subset_metadata.sh 21_May_2026/ 21_May_2026/metadata_additional96.csv
+
+## File integrity checks
+# For every file before transferring to datastore
+md5sum raw_data/* > checklist.chk
+# For every file on eddie
+md5sum -c checklist.chk
+
+## Setting up QIIME2, https://library.qiime2.org/quickstart/qiime2#using-conda
+
+conda env create \
+  --name rachis-qiime2-2026.4 \
+  --file https://raw.githubusercontent.com/qiime2/distributions/refs/heads/dev/2026.4/qiime2/released/rachis-qiime2-linux-64-conda.yml
+
+conda activate rachis-qiime2-2026.4
+
+## Getting data ready for QIIME2
+## Sample manifest file, https://amplicon-docs.qiime2.org/en/2026.4/how-to-guides/how-to-import/#demultiplexed-sequence-data
+# On eddie
+qsub stagein.sh
+ls -1 ../data_by_date > filestoprocess.txt
+qsub batch_manifest.sh
+
+## Import and visualization
+qsub batch_import.sh
+
+## Inspection on QIIME2 viewer, https://view.qiime2.org/
+qsub stageout.sh
+
+## Denoising
+
