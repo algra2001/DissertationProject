@@ -48,23 +48,39 @@ qsub batch_import.sh
 ## Inspection on QIIME2 viewer, https://view.qiime2.org/
 qsub stageout.sh
 
-## Primer trimming v4
+## Primer trimming V4
 qsub batch_trim_primers.sh
 
 ## Inspection on QIIME2 viewer, https://view.qiime2.org/
 qsub stageout.sh
 
-## Denoising v4
+## Denoising V4
 qsub batch_denoise.sh
 
-## Merging data v4
+## Merging data V4
 # Feature tables
 qiime feature-table merge \
   --i-tables *_asv_table.qza \
   --o-merged-table merged_asv_table.qza
+
+qiime feature-table summarize \
+  --i-table merged_asv_table.qza \
+  --o-summary merged_asv_table.qzv \
+  --o-sample-frequencies merged_sample_frequencies.qza \
+  --o-feature-frequencies merged_asv_frequencies.qza
 
 # Representative sequences
 qiime feature-table merge-seqs \
   --i-data *_asv.qza \
   --o-merged-data merged_asv.qza
 
+qiime feature-table tabulate-seqs \
+  --i-data merged_asv_table.qza \
+  --o-visualization merged_asv_table.qzv
+
+## Classifier training
+qsub classifier_training.sh
+
+# Validation
+qiime tools validate classifier/silva-138.2-ssu-nr99-515f-806r-classifier.qza
+qiime tools peek classifier/silva-138.2-ssu-nr99-515f-806r-classifier.qza
