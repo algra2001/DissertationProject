@@ -75,8 +75,8 @@ qiime feature-table merge-seqs \
   --o-merged-data merged_asv.qza
 
 qiime feature-table tabulate-seqs \
-  --i-data merged_asv_table.qza \
-  --o-visualization merged_asv_table.qzv
+  --i-data merged_asv.qza \
+  --o-visualization merged_asv.qzv
 
 ## Classifier training
 qsub classifier_training.sh
@@ -84,3 +84,10 @@ qsub classifier_training.sh
 # Validation
 qiime tools validate classifier/silva-138.2-ssu-nr99-515f-806r-classifier.qza
 qiime tools peek classifier/silva-138.2-ssu-nr99-515f-806r-classifier.qza
+
+## Taxonomic assignment
+# Classification
+qsub assign_taxonomy.sh
+
+# Phylogenetic trees
+qsub build_tree.sh
