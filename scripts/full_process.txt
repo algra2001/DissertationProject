@@ -50,6 +50,13 @@ qsub stageout.sh
 
 ## Primer trimming V4
 qsub batch_trim_primers.sh
+# And second dataset
+qsub batch_trim_primers_set2.sh
+
+## Visualization
+qsub batch_visualize_trim.sh
+# And second dataset
+qsub batch_visualize_trim_set2.sh
 
 ## Inspection on QIIME2 viewer, https://view.qiime2.org/
 qsub stageout.sh
