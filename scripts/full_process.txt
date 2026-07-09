@@ -63,8 +63,15 @@ qsub stageout.sh
 
 ## Denoising V4
 qsub batch_denoise.sh
+# And second dataset
+qsub batch_denoise_set2_short.sh
 
-## Merging data V4
+## Visualization
+qsub batch_visualize_denoise.sh
+# And second dataset
+qsub batch_visualize_denoise_set2_short.sh
+
+## Merging data V4 (in the denoise directory)
 # Feature tables
 qiime feature-table merge \
   --i-tables *_asv_table.qza \
