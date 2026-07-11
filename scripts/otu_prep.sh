@@ -2,6 +2,8 @@
 
 ## A script to prepare trimmed batches for de-novo OTU clustering with QIIME2
 
+# Inspiration from: https://docs.qiime2.org/2024.10/tutorials/otu-clustering/
+
 set -euo pipefail
 
 in_qza="$1"
@@ -61,3 +63,26 @@ qiime feature-table summarize \
   --o-sample-frequencies "${out_prefix}_derep_sample_freqs.qza" \
   --o-feature-frequencies "${out_prefix}_derep_feature_freqs.qza"
 
+# Chimera filtering
+qiime vsearch uchime-denovo \
+  --i-table "${out_prefix}_derep_table.qza" \
+  --i-sequences "${out_prefix}_derep_seqs.qza" \
+  --o-chimeras "${out_prefix}_chimeras.qza" \
+  --o-nonchimeras "${out_prefix}_nonchimeras.qza" \
+  --o-stats "${out_prefix}_uchime_stats.qza"
+
+# Visualization
+qiime metadata tabulate \
+  --m-input-file "${out_prefix}_uchime_stats.qza" \
+  --o-visualization "${out_prefix}_uchime_stats.qzv"
+
+# Non-chimeric outputs
+qiime feature-table filter-features \
+  --i-table "${out_prefix}_derep_table.qza" \
+  --m-metadata-file "${out_prefix}_nonchimeras.qza" \
+  --o-filtered-table "${out_prefix}_nonchim_table.qza"
+
+qiime feature-table filter-seqs \
+  --i-data "${out_prefix}_derep_seqs.qza" \
+  --m-metadata-file "${out_prefix}_nonchimeras.qza" \
+  --o-filtered-data "${out_prefix}_nonchim_seqs.qza"

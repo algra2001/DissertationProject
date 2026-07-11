@@ -2,7 +2,7 @@
 #$ -cwd
 #$ -N otu_prep
 #$ -t 1-11
-#$ -l h_rt=12:00:00
+#$ -l h_rt=48:00:00
 #$ -pe sharedmem 8
 #$ -l h_vmem=8G
 #$ -o ../logs/$JOB_NAME.$TASK_ID.out

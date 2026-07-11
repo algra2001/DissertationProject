@@ -109,3 +109,10 @@ assign_taxonomy_set2_short.sh
 qsub build_tree.sh
 # And second dataset
 build_tree_set2_short.sh
+
+## OTU Clustering
+## OTU read preparation
+qsub batch_otu_prep_set2.sh
+
+## Merging artifacts
+qsub otu_merge.sh
